@@ -62,7 +62,16 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch (parseError) {
+        if (!response.ok) {
+          throw new Error(`API Error ${response.status}: ${text.substring(0, 100)}`);
+        }
+        throw new Error(`Invalid JSON response from server: ${text.substring(0, 100)}`);
+      }
 
       if (!response.ok) {
         if (response.status === 401) {
