@@ -11,11 +11,11 @@ const devConfig = {
   },
   pool: { min: 2, max: 10 },
   migrations: {
-    directory: '../../database/migrations',
+    directory: require('path').resolve(__dirname, '../../database/migrations'),
     tableName: 'knex_migrations',
   },
   seeds: {
-    directory: '../../database/seeds',
+    directory: require('path').resolve(__dirname, '../../database/seeds'),
   },
 };
 
@@ -30,11 +30,11 @@ module.exports = {
     },
     pool: { min: 2, max: 20 },
     migrations: {
-      directory: '../../database/migrations',
+      directory: require('path').resolve(__dirname, '../../database/migrations'),
       tableName: 'knex_migrations',
     },
     seeds: {
-      directory: '../../database/seeds',
+      directory: require('path').resolve(__dirname, '../../database/seeds'),
     },
   },
 };
