@@ -87,7 +87,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // Serve the cloned frontend at the root level
-app.use(express.static(path.join(__dirname, '..', '..', 'frontend', 'stores.gymntonic.com')));
+app.use(express.static(path.join(__dirname, '..', '..', 'frontend')));
 
 // Serve the HTTrack CDN folders so that relative paths like ../cdn9.bigcommerce.com work perfectly
 app.use('/cdn1.bigcommerce.com', express.static(path.join(__dirname, '..', '..', 'frontend', 'cdn1.bigcommerce.com')));
