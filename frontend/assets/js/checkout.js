@@ -33,7 +33,7 @@ async function loadCheckoutCart() {
     cartData.items.forEach(item => {
       const itemTotal = item.quantity * item.price;
       subtotal += itemTotal;
-      html += `<li>${item.quantity}x ${item.product?.name} - $${itemTotal.toFixed(2)}</li>`;
+      html += `<li>${item.quantity}x ${item.product_name || 'Unknown Product'} - $${itemTotal.toFixed(2)}</li>`;
     });
     html += `</ul><p><strong>Total: $${subtotal.toFixed(2)}</strong></p>`;
     
