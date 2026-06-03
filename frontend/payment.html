@@ -358,162 +358,37 @@ var BCData = {};
 		<div class="Content" id="LayoutColumn2">
 			<div class="Block Moveable Panel Breadcrumb" id="CartBreadcrumb">
 	<ul>
-		<li><a href="index.html">Home</a></li><li><a href="javascript:history.go(-1)">... Previous Page</a></li><li>Your Shopping Cart</li>
+		<li><a href="index.html">Home</a></li><li><a href="javascript:history.go(-1)">... Previous Page</a></li><li>Order Confirmation</li>
 	</ul>
 </div>
 
 			
 
-
 <div class="Block Moveable Panel" id="CartHeader">
-	<h2>
-		<span style="display: none;" class="FloatRight">
-			<a href="cart.html" onclick="" title="Click here to proceed to checkout">
-			
-			
-				<img src="../cdn10.bigcommerce.com/r-ed4df9f0c7d32e85e8725e648dac0f8faffad0ff/themes/CosmeticStuff/images/gray/CheckoutButton.gif" alt="Click here to proceed to checkout" />
-			
-
-			</a>
-			
-		</span>
-		Your Shopping Cart
-	</h2>
+	<h2>Order Confirmation</h2>
 </div>
 
-
-			<div class="Block Moveable Panel" id="CartStatusMessage" style="display:none;"></div>
-			<script type="text/javascript">
-lang.InvalidQuantity = "Please enter a valid product quantity.";
-lang.Calculating = "Estimating..."
-lang.CalculateShipping = "Estimate Shipping &amp; Tax"
-lang.ChooseShippingMethod = "Please choose a shipping method."
-lang.CartRemoveConfirm = 'Are you sure you want to remove this item from your cart?';
-lang.ConfirmRemoveGiftWrapping = 'Are you sure you want to remove the gift wrapping from this item?';
-lang.SelectCountry = 'Please choose your country.';
-lang.SelectState = 'Please choose a state/province.';
-lang.EnterZip = 'Please type in your zip/postcode.';
-</script>
-<script src="../cdn10.bigcommerce.com/r-9fdb3f2d51231284a7d1ff5e64f397f830585a4d/javascript/jquery/plugins/imodal/imodald41d.js?" type="text/javascript"></script>
-<div class="Block Moveable Panel" id="CartContent">
+<div class="Block Moveable Panel" id="PaymentFormPanel">
 	<div class="BlockContent">
-		<div style="display: none">
-			<form enctype="multipart/form-data" onsubmit="return Cart.ValidateQuantityForm(this);" action="https://stores.gymntonic.com/cart.php" name="cartForm" id="cartForm" method="post">
-			<input type="hidden" name="action" value="update" />
-			<table class="CartContents Stylize General" cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th colspan="2">Cart Items</th>
-						<th style="text-align: center; white-space: nowrap;">Qty</th>
-						<th style="text-align: center; white-space: nowrap;">Item Price</th>
-						<th style="text-align: right; white-space: nowrap;">Item Total</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr class="SubTotal">
-						<td colspan="4">Subtotal:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					<tr class="SubTotal" style="">
-						<td colspan="4">Gift Wrapping:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					<tr class="SubTotal" style="">
-						<td colspan="4">Discount:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					<tr class="SubTotal" style="">
-						<td colspan="5" style="text-align: right;">
-							<a href="#" class="EstimateShippingLink" onclick="Cart.ToggleShippingEstimation(); return false;"><em>Estimate Shipping &amp; Tax</em></a>
-							<div class="EstimateShipping" style="display: none;">
-								<div class="EstimatedShippingMethods" style="display: none;">
-									<div class="ShippingMethodList">
-									</div>
-									<hr />
-								</div>
-								<dl>
-									<dt><span class="Required">*</span>&nbsp;Country:</dt>
-									<dd>
-										<select class="Field200" name="shippingZoneCountry" id="shippingZoneCountry" onchange="Cart.ToggleShippingEstimateCountry();">
-											
-										</select>
-									</dd>
-
-									<dt><span class="Required" id="shippingZoneStateRequired">*</span>&nbsp;State/Province:</dt>
-									<dd>
-										<select style="display: " class="Field200" name="shippingZoneState" id="shippingZoneState">
-											
-										</select>
-										<input style="display: " type="text" class="Textbox Field200" name="shippingZoneStateName" id="shippingZoneStateName" value="" />
-									</dd>
-
-									<dt><span class="Required">*</span>&nbsp;Zip/Postcode:</dt>
-									<dd><input type="text" class="Field100 Textbox" name="shippingZoneZip" id="shippingZoneZip" value="" /></dd>
-								</dl>
-								<p class="Submit EstimateShippingButtons">
-									<span><a href="#" onclick="Cart.ToggleShippingEstimation();">Cancel</a> or </span><input type="button" onclick="Cart.EstimateShipping();" value="Estimate Shipping &amp; Tax" />
-								</p>
-							</div>
-						</td>
-					</tr>
-					<tr style="display:" class="SubTotal">
-						<td colspan="4">Shipping ():</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					<tr style="display: " class="SubTotal">
-						<td colspan="4">Handling:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					
-					<tr class="SubTotal">
-						<td colspan="4">Grand Total:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-				</tfoot>
-				<tbody>
-					
-				</tbody>
-			</table>
-			<div class="FloatLeft" style="display: ">
-				<input type="image" src="../cdn10.bigcommerce.com/r-ed4df9f0c7d32e85e8725e648dac0f8faffad0ff/themes/CosmeticStuff/images/gray/UpdateQtyButton.gif" alt="Update" />
-			</div>
-			</form>
-			<div class="ProceedToCheckout">
-				<div class="CheckoutButton" style="display: none">
-					<a href="cart.html" onclick="" title="Click here to proceed to checkout">
-					
-					<img src="../cdn10.bigcommerce.com/r-ed4df9f0c7d32e85e8725e648dac0f8faffad0ff/themes/CosmeticStuff/images/gray/CheckoutButton.gif" alt="" />
-					
-					</a>
-				</div>
-				<div class="FloatRight AlternativeCheckout" style="display: none">
-<p style="">-- or --</p>
-<a href="cart.html?action=multiple">check out with multiple addresses</a>
-				</div>
-				
-			</div>
-		</div>
-
-		<div class="KeepShopping FloatRight">
-			<a href="#"></a>
-		</div>
-
-		<div style="display: ">
-			<p class="InfoMessage Message">
-				<strong>There are no products in your cart.</strong>
-			</p>
-			To add a product to your cart, first browse for it or use the search box and then click its &quot;Add to Cart&quot; button.
-			<br /><br />
-			<a href="index.html">Continue Shopping</a> on the GymNTonic.com home page.
-		</div>
+		<p>We accept Cash App, Venmo, Zelle, and apple pay and Bitcoin</p>
+		<br />
+		<p>ORDERS MUST be paid immediately. All unpaid orders are cancelled after 24 hours. Please put the ORDER NUMBER in the notes and NOTHING ELSE.</p>
+		<br />
+		<p style="font-weight: bold;">Contact support email for payment info and instructions:</p>
+		<p><a href="mailto:order@gymntonic.com" style="font-size: 18px; color: #3366ff; font-weight: bold;">order@gymntonic.com</a></p>
+		<br />
+		<p>(Send funds and screenshot the payment you send. EMAIL us the screenshot. If you do not send a screenshot we will not ship the order)</p>
+		<br />
+		<p>For alternative bitcoin or other payment arrangements please message us at "order@gymntonic.com"</p>
+		<p>No Phone calls will be answered and NO MEDICAL ADVICE can be given</p>
+		<br />
+		<p>Be sure to put the ORDER NUMBER in the notes of the payment you are sending.</p>
+		<br />
+		<p>If you are unfamiliar with these payment apps, please look in your GOOGLE store or IPHONE store. These are FREE and you simply connect a debit card or bank account to the app and you can send and receive payments.</p>
+		<br />
+		<p>Thank you!<br />-GYMnTONIC Supplements</p>
 	</div>
 </div>
-
-			<div class="Block Moveable Panel" id="SuggestiveCartContent" style="display:none;"></div>
 		</div>
 		<div class="Right" id="LayoutColumn3">
 			<div class="Block Moveable Panel" id="SideCouponCodeBox">
