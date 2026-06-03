@@ -1,5 +1,5 @@
 const bcrypt = require('bcryptjs');
-const { slugify } = require('../../utils/helpers');
+const { slugify } = require('../../src/utils/helpers');
 
 /**
  * Seed initial data: admin user, categories, and sample products
