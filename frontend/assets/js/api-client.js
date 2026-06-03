@@ -141,8 +141,8 @@ class ApiClient {
 
   cart = {
     get: () => this.get('/cart'),
-    addItem: (product_id, quantity = 1, variant_id = null) => 
-      this.post('/cart/items', { product_id, variant_id, quantity }),
+    addItem: (product_id, quantity = 1, variant_id = null, slug = null) => 
+      this.post('/cart/items', { product_id, variant_id, quantity, slug }),
     updateItem: (itemId, quantity) => 
       this.put(`/cart/items/${itemId}`, { quantity }),
     removeItem: (itemId) => 

@@ -17,23 +17,30 @@ class CartService {
   }
 
   async addItem(data, whereCondition) {
-    const { product_id, variant_id, quantity = 1 } = data;
+    const { product_id, slug, variant_id, quantity = 1 } = data;
 
-    const product = await db('products').where({ id: product_id, is_active: true }).first();
+    // Try to find product by ID first, then fall back to slug lookup
+    let product = null;
+    if (product_id) {
+      product = await db('products').where({ id: product_id, is_active: true }).first();
+    }
+    if (!product && slug) {
+      product = await db('products').where({ slug: slug, is_active: true }).first();
+    }
     if (!product) throw Object.assign(new Error('Product not found'), { statusCode: 404 });
     if (product.track_inventory && product.stock_quantity < quantity) {
       throw Object.assign(new Error('Insufficient stock'), { statusCode: 400 });
     }
 
     const itemData = {
-      product_id,
+      product_id: product.id,
       variant_id: variant_id || null,
       quantity,
       user_id: whereCondition.user_id || null,
       session_id: whereCondition.session_id || null,
     };
 
-    const searchWhere = { product_id, variant_id: variant_id || null };
+    const searchWhere = { product_id: product.id, variant_id: variant_id || null };
     if (whereCondition.user_id) searchWhere.user_id = whereCondition.user_id;
     else searchWhere.session_id = whereCondition.session_id;
 

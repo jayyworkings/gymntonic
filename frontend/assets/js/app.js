@@ -100,12 +100,21 @@ function renderProductHTML(product) {
 
 window.addToCart = async function(productId) {
   try {
-    await api.cart.addItem(productId, 1);
+    // Extract slug from current page URL
+    const slug = extractSlugFromUrl(window.location.pathname);
+    await api.cart.addItem(productId, 1, null, slug);
     updateCartCount();
     alert('Product added to cart!');
   } catch (err) {
     alert(err.message || 'Failed to add to cart');
   }
+}
+
+// Helper to extract product slug from a URL path
+function extractSlugFromUrl(urlPath) {
+  // URLs look like /product-name-here/index.html or /product-name-here/
+  const parts = urlPath.replace(/\/index\.html$/i, '').split('/').filter(Boolean);
+  return parts.length > 0 ? parts[parts.length - 1] : null;
 }
 
 async function loadHomepageProducts() {
@@ -157,11 +166,14 @@ window.fastCartAction = async function(url) {
        return;
     }
     
+    // Extract slug from current page URL
+    const slug = extractSlugFromUrl(window.location.pathname);
+    
     if (window.$ && $('#AjaxLoading').length) {
       $('#AjaxLoading').show();
     }
     
-    await api.cart.addItem(productId, 1);
+    await api.cart.addItem(productId, 1, null, slug);
     updateCartCount();
     
     if (window.$ && $('#AjaxLoading').length) {
@@ -182,12 +194,13 @@ window.check_add_to_cart = function(form, is_fast_cart) {
   
   const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
   const productId = productIdInput ? productIdInput.value : null;
+  const slug = extractSlugFromUrl(window.location.pathname);
   
-  if (productId) {
+  if (productId || slug) {
     if (window.$ && $('#AjaxLoading').length) {
       $('#AjaxLoading').show();
     }
-    api.cart.addItem(productId, qty)
+    api.cart.addItem(productId, qty, null, slug)
       .then(() => {
         updateCartCount();
         if (window.$ && $('#AjaxLoading').length) {
