@@ -51,11 +51,24 @@ function renderCartItems(cart) {
     const itemTotal = item.quantity * parseFloat(item.price || 0);
     subtotal += itemTotal;
 
+    let imgSrc = '';
+    if (item.image_url) {
+      imgSrc = item.image_url;
+      // Rewrite live BigCommerce CDN URLs to the locally cloned frontend folders
+      imgSrc = imgSrc.replace(/https?:\/\/(cdn\d+\.bigcommerce\.com)/g, '/$1');
+      if (imgSrc.startsWith('//')) {
+         imgSrc = imgSrc.replace(/^\/\/(cdn\d+\.bigcommerce\.com)/g, '/$1');
+      }
+    } else {
+      // Fallback
+      imgSrc = '/cdn1.bigcommerce.com/n-yp39j5/2h44pn/product_images/uploaded_images/default.jpg';
+    }
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="CartItemImage">
         <a href="product.html?slug=${item.product_slug || ''}">
-          <img src="${item.image_url ? (item.image_url.startsWith('//') ? 'https:' + item.image_url : item.image_url) : '../cdn1.bigcommerce.com/n-yp39j5/2h44pn/product_images/uploaded_images/default.jpg'}" alt="${item.product_name || 'Product'}" style="max-width: 60px;">
+          <img src="${imgSrc}" alt="${item.product_name || 'Product'}" style="max-width: 60px;">
         </a>
       </td>
       <td class="CartItemDetails">
