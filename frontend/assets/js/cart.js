@@ -18,7 +18,9 @@ async function loadCart() {
       if (emptyMessageContainer) emptyMessageContainer.style.display = 'block';
       
       const proceedBtn = document.querySelector('.ProceedToCheckout');
+      const checkoutBtn = document.querySelector('.CheckoutButton');
       if (proceedBtn) proceedBtn.style.display = 'none';
+      if (checkoutBtn) checkoutBtn.style.display = 'none';
       return;
     }
 
@@ -26,7 +28,9 @@ async function loadCart() {
     if (emptyMessageContainer) emptyMessageContainer.style.display = 'none';
     
     const proceedBtn = document.querySelector('.ProceedToCheckout');
+    const checkoutBtn = document.querySelector('.CheckoutButton');
     if (proceedBtn) proceedBtn.style.display = 'block';
+    if (checkoutBtn) checkoutBtn.style.display = 'block';
 
     renderCartItems(cart);
   } catch (err) {
@@ -51,7 +55,7 @@ function renderCartItems(cart) {
     tr.innerHTML = `
       <td class="CartItemImage">
         <a href="product.html?slug=${item.product_slug || ''}">
-          <img src="${item.image_url ? 'https:'+item.image_url : '../cdn1.bigcommerce.com/n-yp39j5/2h44pn/product_images/uploaded_images/default.jpg'}" alt="${item.product_name || 'Product'}" style="max-width: 60px;">
+          <img src="${item.image_url ? (item.image_url.startsWith('//') ? 'https:' + item.image_url : item.image_url) : '../cdn1.bigcommerce.com/n-yp39j5/2h44pn/product_images/uploaded_images/default.jpg'}" alt="${item.product_name || 'Product'}" style="max-width: 60px;">
         </a>
       </td>
       <td class="CartItemDetails">
