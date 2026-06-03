@@ -142,3 +142,66 @@ function populateSection(sectionId, products) {
     ul.appendChild(li);
   });
 }
+
+// Override legacy BigCommerce cart functions
+window.fastCartAction = async function(url) {
+  try {
+    // Parse product ID from url (e.g. cart.php?action=add&product_id=1404)
+    const a = document.createElement('a');
+    a.href = url;
+    const urlObj = new URL(a.href);
+    const productId = urlObj.searchParams.get('product_id');
+    
+    if (!productId) {
+       console.error('No product id in fast cart url:', url);
+       return;
+    }
+    
+    if (window.$ && $('#AjaxLoading').length) {
+      $('#AjaxLoading').show();
+    }
+    
+    await api.cart.addItem(productId, 1);
+    updateCartCount();
+    
+    if (window.$ && $('#AjaxLoading').length) {
+      $('#AjaxLoading').hide();
+    }
+    alert('Product added to cart!');
+  } catch (err) {
+    if (window.$ && $('#AjaxLoading').length) {
+      $('#AjaxLoading').hide();
+    }
+    alert(err.message || 'Failed to add to cart');
+  }
+};
+
+window.check_add_to_cart = function(form, is_fast_cart) {
+  const qtyInput = form.elements['qty[]'] || form.elements['qty'];
+  const productIdInput = form.elements['product_id'];
+  
+  const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+  const productId = productIdInput ? productIdInput.value : null;
+  
+  if (productId) {
+    if (window.$ && $('#AjaxLoading').length) {
+      $('#AjaxLoading').show();
+    }
+    api.cart.addItem(productId, qty)
+      .then(() => {
+        updateCartCount();
+        if (window.$ && $('#AjaxLoading').length) {
+          $('#AjaxLoading').hide();
+        }
+        alert('Product added to cart!');
+      })
+      .catch((err) => {
+        if (window.$ && $('#AjaxLoading').length) {
+          $('#AjaxLoading').hide();
+        }
+        alert(err.message || 'Failed to add to cart');
+      });
+  }
+  
+  return false; // Prevent default form submission
+};
