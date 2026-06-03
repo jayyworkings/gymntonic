@@ -164,4 +164,4 @@ app.get('/api/v1/trigger-seed', async (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app; // Force render deployment for cart images local rewrite
+module.exports = app; // Force render deployment for REAL this time
