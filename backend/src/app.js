@@ -149,6 +149,17 @@ app.get('/api/v1', (req, res) => {
   });
 });
 
+app.get('/api/v1/trigger-seed', async (req, res) => {
+  const db = require('./config/database');
+  try {
+    await db.migrate.latest();
+    await db.seed.run();
+    res.json({ message: 'Success' });
+  } catch (err) {
+    res.status(500).json({ error: err.message, stack: err.stack });
+  }
+});
+
 // ─── Error Handling ──────────────────────────────────────
 app.use(notFound);
 app.use(errorHandler);
