@@ -53,8 +53,12 @@ const sendOrderConfirmation = async (user, order) => {
           <td style="padding: 10px; border: 1px solid #ddd;">${order.status}</td>
         </tr>
       </table>
+      <p>ORDERS MUST be paid immediately. All unpaid orders are cancelled after 24 hours. Please put the ORDER NUMBER in the notes and NOTHING ELSE.</p>
+      <p style="font-weight: bold;">Contact support email for payment info and instructions:</p>
+      <p><a href="mailto:sales@storesgymntonic.com" style="font-size: 18px; color: #3366ff; font-weight: bold;">sales@storesgymntonic.com</a></p>
+      <p>Be sure to put the ORDER NUMBER in the notes of the payment you are sending.</p>
       <p>We'll send you another email when your order ships.</p>
-      <p style="color: #888; font-size: 12px;">GymNTonic Supplements | gymntonic.com</p>
+      <p style="color: #888; font-size: 12px;">GymNTonic Supplements | storesgymntonic.com</p>
     </div>
   `;
 
@@ -76,6 +80,7 @@ const sendPaymentConfirmation = async (user, payment) => {
       <p>We've received your payment of <strong>$${payment.amount}</strong>.</p>
       <p>Reference: ${payment.reference}</p>
       <p>Thank you for shopping with GymNTonic!</p>
+      <p style="color: #888; font-size: 12px;">GymNTonic Supplements | storesgymntonic.com</p>
     </div>
   `;
 
