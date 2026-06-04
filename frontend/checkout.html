@@ -397,107 +397,49 @@ lang.EnterZip = 'Please type in your zip/postcode.';
 <script src="../cdn10.bigcommerce.com/r-9fdb3f2d51231284a7d1ff5e64f397f830585a4d/javascript/jquery/plugins/imodal/imodald41d.js?" type="text/javascript"></script>
 <div class="Block Moveable Panel" id="CartContent">
 	<div class="BlockContent">
-		<div style="display: none">
-			<form enctype="multipart/form-data" onsubmit="return Cart.ValidateQuantityForm(this);" action="https://stores.gymntonic.com/cart.php" name="cartForm" id="cartForm" method="post">
-			<input type="hidden" name="action" value="update" />
-			<table class="CartContents Stylize General" cellspacing="0" cellpadding="0">
-				<thead>
-					<tr>
-						<th colspan="2">Cart Items</th>
-						<th style="text-align: center; white-space: nowrap;">Qty</th>
-						<th style="text-align: center; white-space: nowrap;">Item Price</th>
-						<th style="text-align: right; white-space: nowrap;">Item Total</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr class="SubTotal">
-						<td colspan="4">Subtotal:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					<tr class="SubTotal" style="">
-						<td colspan="4">Gift Wrapping:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					<tr class="SubTotal" style="">
-						<td colspan="4">Discount:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					<tr class="SubTotal" style="">
-						<td colspan="5" style="text-align: right;">
-							<a href="#" class="EstimateShippingLink" onclick="Cart.ToggleShippingEstimation(); return false;"><em>Estimate Shipping &amp; Tax</em></a>
-							<div class="EstimateShipping" style="display: none;">
-								<div class="EstimatedShippingMethods" style="display: none;">
-									<div class="ShippingMethodList">
-									</div>
-									<hr />
-								</div>
-								<dl>
-									<dt><span class="Required">*</span>&nbsp;Country:</dt>
-									<dd>
-										<select class="Field200" name="shippingZoneCountry" id="shippingZoneCountry" onchange="Cart.ToggleShippingEstimateCountry();">
-											
-										</select>
-									</dd>
-
-									<dt><span class="Required" id="shippingZoneStateRequired">*</span>&nbsp;State/Province:</dt>
-									<dd>
-										<select style="display: " class="Field200" name="shippingZoneState" id="shippingZoneState">
-											
-										</select>
-										<input style="display: " type="text" class="Textbox Field200" name="shippingZoneStateName" id="shippingZoneStateName" value="" />
-									</dd>
-
-									<dt><span class="Required">*</span>&nbsp;Zip/Postcode:</dt>
-									<dd><input type="text" class="Field100 Textbox" name="shippingZoneZip" id="shippingZoneZip" value="" /></dd>
-								</dl>
-								<p class="Submit EstimateShippingButtons">
-									<span><a href="#" onclick="Cart.ToggleShippingEstimation();">Cancel</a> or </span><input type="button" onclick="Cart.EstimateShipping();" value="Estimate Shipping &amp; Tax" />
-								</p>
-							</div>
-						</td>
-					</tr>
-					<tr style="display:" class="SubTotal">
-						<td colspan="4">Shipping ():</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					<tr style="display: " class="SubTotal">
-						<td colspan="4">Handling:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-					
-					<tr class="SubTotal">
-						<td colspan="4">Grand Total:</td>
-						<td><em class="ProductPrice"></em></td>
-					</tr>
-					
-				</tfoot>
-				<tbody>
-					
-				</tbody>
-			</table>
-			<div class="FloatLeft" style="display: ">
-				<input type="image" src="../cdn10.bigcommerce.com/r-ed4df9f0c7d32e85e8725e648dac0f8faffad0ff/themes/CosmeticStuff/images/gray/UpdateQtyButton.gif" alt="Update" />
+		<div id="checkoutCartSummary" style="margin-bottom: 30px;">Loading cart summary...</div>
+		
+		<form id="customCheckoutForm" style="max-width: 500px;">
+			<h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Shipping Address</h3>
+			<div style="margin-bottom: 10px;">
+				<label>Address Line 1 <span class="Required">*</span></label><br>
+				<input type="text" name="address_line1" required class="Textbox" style="width: 100%;">
 			</div>
-			</form>
-			<div class="ProceedToCheckout">
-				<div class="CheckoutButton" style="display: none">
-					<a href="cart.html" onclick="" title="Click here to proceed to checkout">
-					
-					<img src="../cdn10.bigcommerce.com/r-ed4df9f0c7d32e85e8725e648dac0f8faffad0ff/themes/CosmeticStuff/images/gray/CheckoutButton.gif" alt="" />
-					
-					</a>
-				</div>
-				<div class="FloatRight AlternativeCheckout" style="display: none">
-<p style="">-- or --</p>
-<a href="cart.html?action=multiple">check out with multiple addresses</a>
-				</div>
-				
+			<div style="margin-bottom: 10px;">
+				<label>City <span class="Required">*</span></label><br>
+				<input type="text" name="city" required class="Textbox" style="width: 100%;">
 			</div>
-		</div>
+			<div style="margin-bottom: 10px;">
+				<label>State <span class="Required">*</span></label><br>
+				<input type="text" name="state" required class="Textbox" style="width: 100%;">
+			</div>
+			<div style="margin-bottom: 10px;">
+				<label>Zip/Postal Code <span class="Required">*</span></label><br>
+				<input type="text" name="postal_code" required class="Textbox" style="width: 100%;">
+			</div>
+			<div style="margin-bottom: 10px;">
+				<label>Country <span class="Required">*</span></label><br>
+				<input type="text" name="country" required class="Textbox" value="United States" style="width: 100%;">
+			</div>
 
+			<br>
+			<h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Shipping Method</h3>
+			<div style="margin-bottom: 10px;">
+				<label><input type="radio" name="shipping_method" value="standard" checked> Standard Shipping</label><br>
+				<label><input type="radio" name="shipping_method" value="express"> Express Shipping (+$15.00)</label>
+			</div>
+
+			<br>
+			<h3 style="border-bottom: 1px solid #ccc; padding-bottom: 5px;">Payment Method</h3>
+			<div style="margin-bottom: 10px;">
+				<label><input type="radio" name="payment_method" value="crypto" checked> Pay manually (Zelle, CashApp, Venmo, Bitcoin)</label>
+			</div>
+
+			<br>
+			<input type="submit" value="Place Order" style="padding: 10px 20px; font-size: 16px; background-color: #00cc66; color: white; border: none; cursor: pointer;">
+		</form>
+	</div>
+</div>
 		<div class="KeepShopping FloatRight">
 			<a href="#"></a>
 		</div>

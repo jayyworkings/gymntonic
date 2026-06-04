@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   loadCheckoutCart();
   
-  const checkoutForm = document.getElementById('checkoutForm');
+  const checkoutForm = document.getElementById('customCheckoutForm');
   if (checkoutForm) {
     checkoutForm.onsubmit = handleCheckoutSubmit;
   }

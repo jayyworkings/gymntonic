@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   // --- Login Form ---
-  const loginForm = document.querySelector('form[action*="login.php"]');
-  if (loginForm && !loginForm.action.includes('save_new_account')) {
+  const loginForm = document.querySelector('form[action*="check_login"]');
+  if (loginForm) {
     loginForm.onsubmit = async (e) => {
       e.preventDefault();
       
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         await api.auth.login(email, password);
-        window.location.href = '/index.html';
+        window.location.href = '/checkout.html';
       } catch (err) {
         alert(err.message || 'Login failed. Please check your credentials.');
       }
