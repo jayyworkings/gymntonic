@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   updateAuthUI();
   updateCartCount();
+  createCartModal();
   
   // Listen for auth state changes
   window.addEventListener('authStateChanged', updateAuthUI);
@@ -54,6 +55,113 @@ async function updateCartCount() {
   }
 }
 
+// =========================================================
+// ADD-TO-CART MODAL
+// =========================================================
+
+function createCartModal() {
+  // Inject the modal HTML into the page
+  const modalHTML = `
+    <div id="cartModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:10000; background:rgba(0,0,0,0.5);">
+      <div id="cartModalInner" style="
+        position:relative; 
+        background:#fff; 
+        max-width:550px; 
+        margin:60px auto; 
+        border-radius:6px; 
+        box-shadow:0 4px 24px rgba(0,0,0,0.3); 
+        overflow:hidden;
+        max-height:80vh;
+        overflow-y:auto;
+        font-family:Arial,sans-serif;
+      ">
+        <a href="#" id="cartModalClose" style="
+          position:absolute; top:10px; right:14px; font-size:18px; color:#888; text-decoration:none; z-index:2;
+        ">Close &times;</a>
+        <div style="padding:20px 24px;">
+          <h2 style="font-size:18px; color:#333; margin:0 0 16px 0;">OK, <span id="cartModalQty">1</span> item was added to your cart. What next?</h2>
+          <div style="display:flex; gap:14px; align-items:flex-start; margin-bottom:18px; flex-wrap:wrap;">
+            <img id="cartModalImg" src="" alt="" style="width:80px; height:80px; object-fit:contain; border:1px solid #eee; border-radius:4px;">
+            <div style="flex:1; min-width:160px;">
+              <p id="cartModalName" style="font-weight:bold; margin:0 0 4px 0; font-size:14px; color:#333;"></p>
+              <p id="cartModalPrice" style="margin:0 0 4px 0; font-size:13px; color:#666;"></p>
+              <p style="margin:0; font-size:13px; color:#666;">Quantity added: <span id="cartModalQtyAdded">1</span></p>
+            </div>
+            <div style="text-align:right; min-width:180px;">
+              <a href="/checkout.html" style="
+                display:inline-block; background:#e6007e; color:#fff; padding:8px 18px; text-decoration:none; border-radius:4px; font-size:13px; font-weight:bold; margin-bottom:8px;
+              ">Proceed to checkout</a>
+              <p style="margin:4px 0 0; font-size:13px;"><strong>Order Subtotal:</strong> <span id="cartModalSubtotal">$0.00</span></p>
+              <p style="margin:2px 0 0; font-size:12px; color:#666;">Your cart contains <span id="cartModalItemCount">0</span> item(s)</p>
+              <p style="margin:8px 0 0; font-size:13px;">
+                <a href="#" id="cartModalContinue" style="color:#e6007e;">Continue Shopping</a> or
+                <a href="/cart.html" style="color:#e6007e;">View or edit your cart</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  // Close handlers
+  document.getElementById('cartModalClose').addEventListener('click', (e) => {
+    e.preventDefault();
+    closeCartModal();
+  });
+  document.getElementById('cartModalContinue').addEventListener('click', (e) => {
+    e.preventDefault();
+    closeCartModal();
+  });
+  document.getElementById('cartModal').addEventListener('click', (e) => {
+    if (e.target.id === 'cartModal') closeCartModal();
+  });
+}
+
+function closeCartModal() {
+  const modal = document.getElementById('cartModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function showCartModal(productName, productPrice, productImage, qtyAdded) {
+  // Fetch latest cart data
+  let cart;
+  try {
+    const res = await api.cart.get();
+    cart = res.data;
+  } catch (e) {
+    cart = { items: [], total: '0.00', item_count: 0 };
+  }
+
+  const totalItems = cart.items ? cart.items.reduce((sum, item) => sum + item.quantity, 0) : 0;
+  const subtotal = cart.items ? cart.items.reduce((sum, item) => sum + (item.quantity * parseFloat(item.price || 0)), 0) : 0;
+
+  document.getElementById('cartModalQty').textContent = qtyAdded;
+  document.getElementById('cartModalQtyAdded').textContent = qtyAdded;
+  document.getElementById('cartModalName').textContent = productName;
+  document.getElementById('cartModalPrice').textContent = '$' + parseFloat(productPrice).toFixed(2);
+  document.getElementById('cartModalSubtotal').textContent = '$' + subtotal.toFixed(2);
+  document.getElementById('cartModalItemCount').textContent = totalItems;
+
+  const imgEl = document.getElementById('cartModalImg');
+  if (productImage) {
+    let imgSrc = productImage;
+    imgSrc = imgSrc.replace(/https?:\/\/(cdn\d+\.bigcommerce\.com)/g, '/$1');
+    if (imgSrc.startsWith('//')) imgSrc = imgSrc.replace(/^\/\/(cdn\d+\.bigcommerce\.com)/g, '/$1');
+    imgEl.src = imgSrc;
+    imgEl.style.display = 'block';
+  } else {
+    imgEl.style.display = 'none';
+  }
+
+  document.getElementById('cartModal').style.display = 'block';
+}
+
+// =========================================================
+// PRODUCT RENDERING
+// =========================================================
+
 function renderProductHTML(product) {
   // Try to find the image URL
   let imageUrl = '../cdn1.bigcommerce.com/n-yp39j5/2h44pn/product_images/uploaded_images/default.jpg';
@@ -65,7 +173,6 @@ function renderProductHTML(product) {
   if (imageUrl.startsWith('//')) {
     imageUrl = 'https:' + imageUrl;
   } else if (!imageUrl.startsWith('http') && !imageUrl.startsWith('../')) {
-    // If it's just a filename, assume it's relative to where images are
     imageUrl = `../cdn1.bigcommerce.com/n-yp39j5/2h44pn/products/${product.id}/images/${product.images[0]?.id || 1}/${imageUrl}?c=2`;
   }
   
@@ -98,13 +205,39 @@ function renderProductHTML(product) {
   `;
 }
 
+// =========================================================
+// ADD TO CART FUNCTIONS
+// =========================================================
+
+// Get product info from the current product page DOM
+function getProductInfoFromPage() {
+  const name = document.querySelector('.ProductMain h1, .ProductMain h2, [itemprop="name"]');
+  const price = document.querySelector('.ProductPrice em, .ProductMain .ProductPrice, .CurrentlySelling .ProductPrice em');
+  
+  // Try to get the main product image
+  let image = null;
+  const mainImg = document.querySelector('.ProductThumbImage img, .ProductMain .ProductImage img, #ProductDetails .ProductImage img');
+  if (mainImg) image = mainImg.src;
+
+  return {
+    name: name ? name.textContent.trim() : 'Product',
+    price: price ? price.textContent.replace(/[^0-9.]/g, '') : '0.00',
+    image: image
+  };
+}
+
 window.addToCart = async function(productId) {
   try {
-    // Extract slug from current page URL
     const slug = extractSlugFromUrl(window.location.pathname);
-    await api.cart.addItem(productId, 1, null, slug);
+    const qtyInput = document.querySelector('input[name="qty[]"], input[name="qty"]');
+    const qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+
+    await api.cart.addItem(productId, qty, null, slug);
     updateCartCount();
-    alert('Product added to cart!');
+
+    // Get product info for modal
+    const info = getProductInfoFromPage();
+    showCartModal(info.name, info.price, info.image, qty);
   } catch (err) {
     alert(err.message || 'Failed to add to cart');
   }
@@ -112,17 +245,19 @@ window.addToCart = async function(productId) {
 
 // Helper to extract product slug from a URL path
 function extractSlugFromUrl(urlPath) {
-  // URLs look like /product-name-here/index.html or /product-name-here/
   const parts = urlPath.replace(/\/index\.html$/i, '').split('/').filter(Boolean);
   return parts.length > 0 ? parts[parts.length - 1] : null;
 }
+
+// =========================================================
+// HOMEPAGE PRODUCTS
+// =========================================================
 
 async function loadHomepageProducts() {
   try {
     const res = await api.products.getAll({ limit: 12, sort: 'created_at', order: 'desc' });
     const products = res.data.products;
     
-    // Divide products among the 3 sections randomly for now just to populate them
     const newProducts = products.slice(0, 4);
     const featuredProducts = products.slice(4, 8);
     const popularProducts = products.slice(8, 12);
@@ -142,7 +277,7 @@ function populateSection(sectionId, products) {
   const ul = block.querySelector('ul.ProductList');
   if (!ul) return;
   
-  ul.innerHTML = ''; // Clear existing static products
+  ul.innerHTML = '';
   
   products.forEach((product, index) => {
     const li = document.createElement('li');
@@ -152,10 +287,12 @@ function populateSection(sectionId, products) {
   });
 }
 
-// Override legacy BigCommerce cart functions
+// =========================================================
+// LEGACY BIGCOMMERCE OVERRIDES
+// =========================================================
+
 window.fastCartAction = async function(url) {
   try {
-    // Parse product ID from url (e.g. cart.php?action=add&product_id=1404)
     const a = document.createElement('a');
     a.href = url;
     const urlObj = new URL(a.href);
@@ -166,7 +303,6 @@ window.fastCartAction = async function(url) {
        return;
     }
     
-    // Extract slug from current page URL
     const slug = extractSlugFromUrl(window.location.pathname);
     
     if (window.$ && $('#AjaxLoading').length) {
@@ -179,7 +315,24 @@ window.fastCartAction = async function(url) {
     if (window.$ && $('#AjaxLoading').length) {
       $('#AjaxLoading').hide();
     }
-    alert('Product added to cart!');
+
+    // Try to get the product name/price/image from the clicked item's parent
+    let name = 'Product', price = '0.00', image = null;
+    // Look for the product details in the sidebar or product list
+    const productLinks = document.querySelectorAll('.ProductList li');
+    for (const li of productLinks) {
+      const addLink = li.querySelector(`.ProductActionAdd a[href*="product_id=${productId}"]`);
+      if (addLink) {
+        const nameEl = li.querySelector('.ProductDetails a');
+        const priceEl = li.querySelector('.ProductPriceRating em');
+        const imgEl = li.querySelector('.ProductImage img');
+        if (nameEl) name = nameEl.textContent.trim();
+        if (priceEl) price = priceEl.textContent.replace(/[^0-9.]/g, '');
+        if (imgEl) image = imgEl.src;
+        break;
+      }
+    }
+    showCartModal(name, price, image, 1);
   } catch (err) {
     if (window.$ && $('#AjaxLoading').length) {
       $('#AjaxLoading').hide();
@@ -206,7 +359,8 @@ window.check_add_to_cart = function(form, is_fast_cart) {
         if (window.$ && $('#AjaxLoading').length) {
           $('#AjaxLoading').hide();
         }
-        alert('Product added to cart!');
+        const info = getProductInfoFromPage();
+        showCartModal(info.name, info.price, info.image, qty);
       })
       .catch((err) => {
         if (window.$ && $('#AjaxLoading').length) {

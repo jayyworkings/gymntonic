@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>GymNTonic.com - Order Confirmation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="description" content="GymNTonic Order Confirmation" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" href="https://cdn2.bigcommerce.com/n-yp39j5/2h44pn/product_images/default_favicon.ico" />
+	<style>
+		* { box-sizing: border-box; }
+		body { margin: 0; padding: 0; background: #fff; font-family: Arial, sans-serif; color: #333; }
+		a { color: #3b82f6; }
+	</style>
+</head>
+
+<body>
+  <!-- Header Banner -->
+  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); padding: 30px 20px; text-align: center;">
+    <img src="product_images/gymntonicmovinglogobig_1502234421__96024.gif" alt="GymNTonic" style="max-width: 300px; height: auto;">
+  </div>
+
+  <div id="confirmationApp" style="max-width: 560px; margin: 0 auto; padding: 30px 20px;">
+    <div style="text-align:center; padding:40px; color:#666;">Loading order details...</div>
+  </div>
+
+<script src="assets/js/api-client.js?v=4"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+  const container = document.getElementById('confirmationApp');
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order_id');
+
+  if (!orderId) {
+    container.innerHTML = '<p>No order found. <a href="/index.html">Return to store</a></p>';
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem('user'));
+  const firstName = user ? user.first_name : 'Customer';
+
+  // Try to get order details from the API
+  let order = null;
+  try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const res = await fetch(`/api/v1/orders/${orderId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        order = data.data;
+      }
+    }
+  } catch (e) {
+    console.error('Failed to fetch order:', e);
+  }
+
+  const totalAmount = order ? `$${parseFloat(order.total_amount).toFixed(2)}` : '';
+  const itemCount = order && order.items ? order.items.length : '';
+
+  container.innerHTML = `
+    <h1 style="font-size: 32px; font-weight: 300; margin-bottom: 8px;">Thank you ${firstName}!</h1>
+    
+    <div style="margin: 24px 0; padding: 20px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee;">
+      <p style="font-size: 16px; margin: 0 0 8px;">Your order number is <strong>${orderId}</strong></p>
+      <p style="font-size: 14px; color: #666; line-height: 1.6; margin: 12px 0 0;">
+        Your order was sent to us but is currently awaiting payment. Once we receive the payment for your order, it will be completed. 
+        If you've already provided payment details then we will process your order manually and send you an email when it's completed.
+      </p>
+    </div>
+
+    <div style="padding: 20px 0; border-bottom: 1px solid #eee; margin-bottom: 20px;">
+      <p style="font-size: 14px; line-height: 1.8; margin: 0;">
+        ORDERS MUST be paid immediately. All unpaid orders are cancelled after 24 hours.
+        Please put the ORDER NUMBER in the notes and NOTHING ELSE.
+      </p>
+      <br>
+      <p style="font-weight: bold; margin: 0 0 4px;">Contact support email for payment info and instructions:</p>
+      <p style="margin: 0;"><a href="mailto:sales@storesgymntonic.com" style="font-size: 18px; font-weight: bold; color: #3b82f6;">sales@storesgymntonic.com</a></p>
+    </div>
+
+    ${order && order.items ? `
+    <div style="background: #f9f9f9; border-radius: 8px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div>
+          <strong>${order.items.length} Item${order.items.length > 1 ? 's' : ''}</strong><br>
+          <a href="#" onclick="document.getElementById('orderItems').style.display = document.getElementById('orderItems').style.display === 'none' ? 'block' : 'none'; return false;" style="color: #3b82f6; font-size: 13px;">Show Details</a>
+        </div>
+      </div>
+      <div style="font-size: 22px; font-weight: bold;">${totalAmount}</div>
+    </div>
+    <div id="orderItems" style="display: none; padding: 0 0 20px;">
+      ${order.items.map(item => `
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+          <span>${item.quantity}x ${item.product_name}</span>
+          <span>$${parseFloat(item.total_price).toFixed(2)}</span>
+        </div>
+      `).join('')}
+    </div>
+    ` : ''}
+
+    <div style="text-align: center; margin-top: 30px;">
+      <a href="/index.html" style="display: inline-block; background: #333; color: #fff; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-size: 14px;">Continue Shopping</a>
+    </div>
+  `;
+});
+</script>
+</body>
+</html>

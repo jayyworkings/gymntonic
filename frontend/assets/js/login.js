@@ -10,7 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         await api.auth.login(email, password);
-        window.location.href = '/checkout.html';
+        // If referred from checkout, go back to checkout. Otherwise go to home.
+        const referrer = document.referrer || '';
+        if (referrer.includes('checkout') || referrer.includes('cart')) {
+          window.location.href = '/checkout.html';
+        } else {
+          window.location.href = '/index.html';
+        }
       } catch (err) {
         alert(err.message || 'Login failed. Please check your credentials.');
       }
