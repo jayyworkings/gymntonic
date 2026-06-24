@@ -164,4 +164,4 @@ app.get('/api/v1/trigger-seed', async (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-module.exports = app; // Force render deployment for checkout flow v2
+module.exports = app; // Force render deployment for sitemap.xml and robots.txt
